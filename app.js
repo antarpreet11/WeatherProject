@@ -5,7 +5,8 @@ const dotenv = require('dotenv')
 dotenv.config() 
 
 const app = express()
-const city = 'waterloo,ca'
+
+let city = 'waterloo,ca'
 
 app.get('/', (req, res) => {
 
@@ -15,9 +16,15 @@ app.get('/', (req, res) => {
             const wdata = JSON.parse(d)
             const temp = wdata.main.temp
             const desc = wdata.weather[0].description
-            console.log(temp)
-            console.log(desc)
-            res.send(`<h1>Temp in ${city} is ${temp} C</h1>`)
+            const icon = wdata.weather[0].icon
+
+            const imgUrl = `http://openweathermap.org/img/wn/${icon}@2x.png`
+            console.log(wdata)
+
+            res.write(`<h1>Temp in ${city} is ${temp} C</h1>`)
+            res.write(`<h3>The weather is currently - ${desc}</h3>`)
+            res.write(`<img src=${imgUrl}>`)
+            res.send()
         })
     })
 })
