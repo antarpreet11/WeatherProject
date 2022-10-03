@@ -2,16 +2,24 @@ const express = require('express')
 const https = require('https')
 const dotenv = require('dotenv')
 
+dotenv.config() 
+
 const app = express()
+const city = 'waterloo,ca'
 
 app.get('/', (req, res) => {
 
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=waterloo,ca&appid=${apikeygoeshere}&units=metric`
+    const url = `${process.env.URL}q=${city}&appid=${process.env.KEY}&units=metric`
     https.get(url, (response) => {
-        console.log(response)
+        response.on('data', (d) => {
+            const wdata = JSON.parse(d)
+            const temp = wdata.main.temp
+            const desc = wdata.weather[0].description
+            console.log(temp)
+            console.log(desc)
+            res.send(`<h1>Temp in ${city} is ${temp} C</h1>`)
+        })
     })
-
-    res.send('Hello')
 })
 
 app.listen(3000, () => {
